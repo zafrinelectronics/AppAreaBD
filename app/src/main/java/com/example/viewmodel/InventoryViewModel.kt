@@ -194,6 +194,15 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     private val _snackbarMessage = MutableStateFlow<String?>(null)
     val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
 
+    fun saveCustomer(customer: Customer) = viewModelScope.launch { repository.saveCustomer(customer) }
+    fun deleteCustomer(customer: Customer) = viewModelScope.launch { repository.deleteCustomer(customer) }
+    fun saveSupplier(supplier: Supplier) = viewModelScope.launch { repository.saveSupplier(supplier) }
+    fun deleteSupplier(supplier: Supplier) = viewModelScope.launch { repository.deleteSupplier(supplier) }
+    fun savePurchase(purchase: Purchase) = viewModelScope.launch { repository.savePurchase(purchase) }
+    fun deletePurchase(purchase: Purchase) = viewModelScope.launch { repository.deletePurchase(purchase) }
+    fun saveAccountEntry(entry: AccountEntry) = viewModelScope.launch { repository.saveAccountEntry(entry) }
+    fun deleteAccountEntry(entry: AccountEntry) = viewModelScope.launch { repository.deleteAccountEntry(entry) }
+
     init {
         val db = AppDatabase.getDatabase(application)
         repository = InventoryRepository(
