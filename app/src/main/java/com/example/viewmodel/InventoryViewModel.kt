@@ -21,6 +21,10 @@ import com.example.util.GitHubSyncResult
 import com.example.util.NotificationHelper
 import com.example.util.ParsedBackupData
 import com.example.data.model.AppUser
+import com.example.data.model.Customer
+import com.example.data.model.Supplier
+import com.example.data.model.Purchase
+import com.example.data.model.AccountEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -91,6 +95,10 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     val allEmployees: StateFlow<List<Employee>>
     val allSalaryPayments: StateFlow<List<SalaryPayment>>
     val allUsers: StateFlow<List<AppUser>>
+    val allCustomers: StateFlow<List<Customer>>
+    val allSuppliers: StateFlow<List<Supplier>>
+    val allPurchases: StateFlow<List<Purchase>>
+    val allAccountEntries: StateFlow<List<AccountEntry>>
     val returnedProducts: StateFlow<List<Product>>
     val shopSettings: StateFlow<ShopSettings> = settingsManager.settings
 
@@ -194,7 +202,11 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             db.saleDao(),
             db.expenseDao(),
             db.employeeDao(),
-            db.userDao()
+            db.userDao(),
+            db.customerDao(),
+            db.supplierDao(),
+            db.purchaseDao(),
+            db.accountEntryDao()
         )
 
         allProducts = repository.allProducts.stateIn(
@@ -238,6 +250,11 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+        allCustomers = repository.allCustomers.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        allSuppliers = repository.allSuppliers.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        allPurchases = repository.allPurchases.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        allAccountEntries = repository.allAccountEntries.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
         viewModelScope.launch {
             repository.seedAdminUserIfEmpty()
