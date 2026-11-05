@@ -13,7 +13,15 @@ import com.example.data.model.SalaryPayment
 import com.example.data.model.Sale
 import com.example.data.model.TransactionType
 import com.example.data.db.UserDao
+import com.example.data.db.CustomerDao
+import com.example.data.db.SupplierDao
+import com.example.data.db.PurchaseDao
+import com.example.data.db.AccountEntryDao
 import com.example.data.model.AppUser
+import com.example.data.model.Customer
+import com.example.data.model.Supplier
+import com.example.data.model.Purchase
+import com.example.data.model.AccountEntry
 import kotlinx.coroutines.flow.Flow
 
 class InventoryRepository(
@@ -22,7 +30,11 @@ class InventoryRepository(
     private val saleDao: SaleDao,
     private val expenseDao: ExpenseDao,
     private val employeeDao: EmployeeDao,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val customerDao: CustomerDao,
+    private val supplierDao: SupplierDao,
+    private val purchaseDao: PurchaseDao,
+    private val accountEntryDao: AccountEntryDao
 ) {
     private val prefs = context.getSharedPreferences("apple_area_bd_prefs", Context.MODE_PRIVATE)
 
@@ -36,6 +48,20 @@ class InventoryRepository(
     val activeEmployees: Flow<List<Employee>> = employeeDao.getActiveEmployees()
     val allSalaryPayments: Flow<List<SalaryPayment>> = employeeDao.getAllSalaryPayments()
     val allUsers: Flow<List<AppUser>> = userDao.getAllUsers()
+    val allCustomers: Flow<List<Customer>> = customerDao.observeAll()
+    val allSuppliers: Flow<List<Supplier>> = supplierDao.observeAll()
+    val allPurchases: Flow<List<Purchase>> = purchaseDao.observeAll()
+    val allAccountEntries: Flow<List<AccountEntry>> = accountEntryDao.observeAll()
+
+    // Customer, supplier, purchase and account ledger methods
+    suspend fun saveCustomer(value: Customer): Long = customerDao.upsert(value)
+    suspend fun deleteCustomer(value: Customer) = customerDao.delete(value)
+    suspend fun saveSupplier(value: Supplier): Long = supplierDao.upsert(value)
+    suspend fun deleteSupplier(value: Supplier) = supplierDao.delete(value)
+    suspend fun savePurchase(value: Purchase): Long = purchaseDao.upsert(value)
+    suspend fun deletePurchase(value: Purchase) = purchaseDao.delete(value)
+    suspend fun saveAccountEntry(value: AccountEntry): Long = accountEntryDao.upsert(value)
+    suspend fun deleteAccountEntry(value: AccountEntry) = accountEntryDao.delete(value)
 
     // Product methods
     suspend fun addProduct(product: Product): Long = productDao.insertProduct(product)
