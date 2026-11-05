@@ -95,7 +95,6 @@ abstract class AppDatabase : RoomDatabase() {
                         occurredAt INTEGER NOT NULL
                     )
                 """.trimIndent())
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_customers_name ON customers(name)")
             }
         }
 
